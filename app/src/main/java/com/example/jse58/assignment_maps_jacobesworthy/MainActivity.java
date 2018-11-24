@@ -85,11 +85,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void nothing()
-    {
-
-    }
-
     private void toastMessage(String msg)
     {
         Toast.makeText(this,msg,Toast.LENGTH_SHORT).show();

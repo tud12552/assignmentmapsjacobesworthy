@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">assignment-maps-jacobesworthy</string>
+    <array name="genres">
+        <item>Rock</item>
+        <item>Sofi</item>
+        <item>Pop</item>
+        <item>Folk</item>
+    </array>
+
+</resources>

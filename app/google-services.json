@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "33373428072",
+    "firebase_url": "https://assignmentmapsjacobesworthy.firebaseio.com",
+    "project_id": "assignmentmapsjacobesworthy",
+    "storage_bucket": "assignmentmapsjacobesworthy.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:33373428072:android:6f14bcf5ecb7a532",
+        "android_client_info": {
+          "package_name": "com.example.jse58.assignment_maps_jacobesworthy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "33373428072-01bk6ec2vlcmq02p4vjk98dt5tckcg93.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.jse58.assignment_maps_jacobesworthy",
+            "certificate_hash": "b4941e7cd77beaa80fc5a3640d051a7383df2755"
+          }
+        },
+        {
+          "client_id": "33373428072-luog1ca5ee07mcd4iba3tvnvcflso60o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJQ2T6fNuNZhqNoSEbzidA0uV2whByFCE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "33373428072-luog1ca5ee07mcd4iba3tvnvcflso60o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -2,48 +2,36 @@ package com.example.jse58.assignment_maps_jacobesworthy;
 
 public class Location
 {
-    String locationID;
-    String latitude;
+    Double locationID;
+    Double latitude;
     String location;
-    String longitude;
+    Double longitude;
 
     public Location()
     {
 
     }
 
-    public Location(String locID, String lat, String loc, String lon) {
+    public Location(Double locID, Double lat, String loc, Double lon) {
         this.locationID = locID;
         this.latitude = lat;
         this.location = loc;
         this.longitude = lon;
     }
 
-    public String getLocationID() {
+    public Double getLocationID() {
         return locationID;
     }
 
-    public String getLatitude() {
+    public Double getLatitude() {
         return latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
     }
 
     public String getLocation() {
         return location;
-    }
-
-    public String getLongitude() {
-        return longitude;
-    }
-
-    public void setLocationID(String locationID) {
-        this.locationID = locationID;
-    }
-
-    public void setLatitude(String latitude) {
-        this.latitude = latitude;
-    }
-
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
     }
 }

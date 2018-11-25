@@ -10,66 +10,61 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
     String TAG = "MainActivity";
 
-    EditText editTxtName;
-    Button btnAddArtist;
-    Spinner spinnerGenres;
+    TextView txtViewLat, txtViewLon, txtViewLoc;
 
-    String lat,lon,loc;
+    // Map information.
+    private SupportMapFragment supportMapFragment;
+    private LatLng coorinates;
+    private Marker mapMarker;
 
     DatabaseReference databaseLocations;
-
-    List<Location> locationList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        locationList = new ArrayList<>();
+        txtViewLat = (TextView)findViewById(R.id.txtViewLat);
+        txtViewLon = (TextView)findViewById(R.id.txtViewLon);
+        txtViewLoc = (TextView)findViewById(R.id.txtViewLoc);
 
-        databaseLocations = FirebaseDatabase.getInstance().getReference("assignmentmapsjacobesworthy");
+       supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
 
-        editTxtName = (EditText)findViewById(R.id.editTxtName);
-        btnAddArtist = (Button) findViewById(R.id.btnAddArtist);
-        spinnerGenres = (Spinner) findViewById(R.id.spinnerGenres);
-
-        btnAddArtist.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                firebaseLoadData();
-
-            }
-        });
+        databaseLocations = FirebaseDatabase.getInstance().getReference();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-//
-        databaseLocations.addValueEventListener(new ValueEventListener() {
+
+        databaseLocations.child("Locations").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                locationList.clear();
-                for(DataSnapshot locations : dataSnapshot.getChildren())
+                for(DataSnapshot databaseLocs : dataSnapshot.getChildren())
                 {
-                    Location location = locations.getValue(Location.class);
+                    Location location = databaseLocs.getValue(Location.class);
                     Log.d(TAG, location.getLocation());
-                    //locationList.add(location);
+                    txtViewLat.setText(location.latitude.toString());
+                    txtViewLon.setText(location.longitude.toString());
+                    txtViewLoc.setText(location.location);
                 }
             }
 

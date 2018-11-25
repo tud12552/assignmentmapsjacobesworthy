@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.jse58.assignment_maps_jacobesworthy">
 
+    <meta-data android:name="com.google.android.geo.API_KEY"
+        android:value="AIzaSyDSB2K1NB7hbIf6Hsn_WRDs3d_ZXqr5d8s"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -16,8 +19,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDSB2K1NB7hbIf6Hsn_WRDs3d_ZXqr5d8s"/>
+
     </application>
 
 </manifest>

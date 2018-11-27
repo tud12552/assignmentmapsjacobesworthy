@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -30,21 +31,23 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MainActivity extends AppCompatActivity{// implements OnMapReadyCallback {
 
     String TAG = "MainActivity";
 
-    ArrayList<Location> dbLocations = null;
+    TextView txtViewLoc;
+    TextView txtViewLat;
+    TextView txtViewLon;
 
-    Button btnViewMap;
+    ArrayList<Location> dbLocations = null;
 
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseLocations;
 
     // Map information.
-    private SupportMapFragment supportMapFragment;
-    private LatLng coorinates;
-    private Marker mapMarker;
+//    private SupportMapFragment supportMapFragment;
+//    private LatLng coorinates;
+//    private Marker mapMarker;
 
     public Activity MainActivity()
     {
@@ -56,8 +59,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
        super.onCreate(savedInstanceState);
        setContentView(R.layout.activity_main);
 
-       supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
-       supportMapFragment.getMapAsync(this);
+       txtViewLoc = (TextView)findViewById(R.id.txtViewLocation);
+       txtViewLat = (TextView)findViewById(R.id.txtViewLat);
+       txtViewLon = (TextView) findViewById(R.id.txtViewLon);
+
+//       supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
+//       supportMapFragment.getMapAsync(this);
     }
 
 
@@ -80,10 +87,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s)
             {
                 toastMessage("Entered the onChildAdded");
+
                 for (DataSnapshot databaseLocs : dataSnapshot.getChildren())
                 {
                     Location location = dataSnapshot.getValue(Location.class);
-                    Log.d(TAG, String.valueOf(location));
+                    Log.d(TAG, "Location: " + location.getLocation() + " Latitude: " + location.getLatitude().toString()
+                    + " Longitude: " + location.getLongitude().toString());
+
+                    txtViewLoc.setText(location.getLocation());
+                    txtViewLat.setText(location.getLatitude().toString());
+                    txtViewLon.setText(location.getLongitude().toString());
 
                     if(!dbLocations.contains(location.getLocation())) {
                         dbLocations.add(location);
@@ -124,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
 
-    @Override
+/*    @Override
     public void onMapReady(GoogleMap googleMap) {
 
         Location tmpLocation = dbLocations.get(0);
@@ -203,5 +216,5 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 return false;
             }
         });
-    }
+    }*/
 }

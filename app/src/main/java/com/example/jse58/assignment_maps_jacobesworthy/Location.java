@@ -12,11 +12,17 @@ public class Location
 
     }
 
-    public Location(Double locID, Double lat, String loc, Double lon) {
-        this.locationID = locID;
+    public Location(Double lat, String loc, Double lon) {
         this.latitude = lat;
         this.location = loc;
         this.longitude = lon;
+    }
+
+    public Location(Double locationID, Double latitude, String location, Double longitude) {
+        this.locationID = locationID;
+        this.latitude = latitude;
+        this.location = location;
+        this.longitude = longitude;
     }
 
     public Double getLocationID() {

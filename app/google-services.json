@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "33373428072-48lhphtr6dlo7v49pii7lcdk0odom4n2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.jse58.assignment_maps_jacobesworthy",
+            "certificate_hash": "fa2dadda42ee0d70486028277c45d476a0f4c498"
+          }
+        },
+        {
           "client_id": "33373428072-luog1ca5ee07mcd4iba3tvnvcflso60o.apps.googleusercontent.com",
           "client_type": 3
         }

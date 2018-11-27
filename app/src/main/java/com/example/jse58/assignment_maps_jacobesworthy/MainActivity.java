@@ -1,13 +1,10 @@
 package com.example.jse58.assignment_maps_jacobesworthy;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.ButtonBarLayout;
-import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -19,91 +16,90 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     String TAG = "MainActivity";
 
-    String[] dbLocations;
-
-    Double[] dbLats, dbLons;
-
-
-    TextView txtViewLat, txtViewLon, txtViewLoc;
-
-    private Double currentLat, currentLon;
-    private String currentLoc;
+    List<Location> dbLocations = null;
 
     // Map information.
     private SupportMapFragment supportMapFragment;
     private LatLng coorinates;
     private Marker mapMarker;
 
+    FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseLocations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+       super.onCreate(savedInstanceState);
+       setContentView(R.layout.activity_main);
 
-//        txtViewLat = (TextView)findViewById(R.id.txtViewLat);
-//        txtViewLon = (TextView)findViewById(R.id.txtViewLon);
-//        txtViewLoc = (TextView)findViewById(R.id.txtViewLoc);
+       firebaseDatabase = FirebaseDatabase.getInstance();
+       databaseLocations = firebaseDatabase.getReference("Locations");
 
-       supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
-       supportMapFragment.getMapAsync(this);
 
-        databaseLocations = FirebaseDatabase.getInstance().getReference();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
         firebaseLoadData();
-
+        supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
+        supportMapFragment.getMapAsync(this);
     }
 
-    private void firebaseLoadData()
+    public void firebaseLoadData()
     {
-        toastMessage("Entered the firebaseLoadData");
-
-        databaseLocations.child("Locations").addValueEventListener(new ValueEventListener() {
-
+        dbLocations = new ArrayList<>();
+        databaseLocations.addChildEventListener(new ChildEventListener()
+        {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                int i = 0;
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s)
+            {
+                toastMessage("Entered the onChildAdded");
                 for (DataSnapshot databaseLocs : dataSnapshot.getChildren())
                 {
-                    Location location = databaseLocs.getValue(Location.class);
+                    Location location = dataSnapshot.getValue(Location.class);
+                    Log.d(TAG, String.valueOf(location));
 
-                    dbLocations[i] = location.getLocation();
-                    dbLats[i] = location.getLatitude();
-                    dbLons[i] = location.getLongitude();
-
-                    Log.d(TAG, location.getLocation());
-                    txtViewLat.setText(location.latitude.toString());
-                    txtViewLon.setText(location.longitude.toString());
-                    txtViewLoc.setText(location.location);
-
-                    currentLat = location.getLatitude();
-                    currentLon = location.getLongitude();
-                    currentLoc = location.getLocation();
-                    i++;
+                    if(!dbLocations.contains(location)) {
+                        dbLocations.add(location);
+                    }
                 }
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                System.out.println("The read failed: " + databaseError.getCode());
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s)
+            {
+                toastMessage("Entered the onChildChanged");
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot)
+            {
+                toastMessage("Entered the onChildRemoved");
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s)
+            {
+                toastMessage("Entered the onChildMoved");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError)
+            {
+                toastMessage("Entered the onCancelled");
             }
         });
     }
@@ -115,24 +111,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        firebaseLoadData();
 
-        if(currentLoc != null || currentLon != null || currentLat != null)
-        {
-            currentLat = dbLats[0];
-            currentLon = dbLons[0];
-            currentLoc = dbLocations[0];
-            //currentLat = 32.71536;
-            //currentLon = -117.161087;
-            //currentLoc = "San Diego";
-        }
-        coorinates = new LatLng(currentLat, currentLon);
+        Location tmpLocation = dbLocations.get(0);
+        coorinates = new LatLng(tmpLocation.getLatitude(), tmpLocation.getLongitude());
 
-        googleMap.addMarker(new MarkerOptions().position(coorinates).title(currentLoc));
+        googleMap.addMarker(new MarkerOptions().position(coorinates).title(tmpLocation.getLocation()));
 
-         useMapClickListener(googleMap);
+        useMapClickListener(googleMap);
         useMarkerClickListener(googleMap);
         mapCameraConfiguration(googleMap);
+
     }
 
     private void mapCameraConfiguration(GoogleMap googleMap){

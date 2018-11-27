@@ -1,10 +1,15 @@
 package com.example.jse58.assignment_maps_jacobesworthy;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -29,33 +34,41 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     String TAG = "MainActivity";
 
-    List<Location> dbLocations = null;
+    ArrayList<Location> dbLocations = null;
+
+    Button btnViewMap;
+
+    FirebaseDatabase firebaseDatabase;
+    DatabaseReference databaseLocations;
 
     // Map information.
     private SupportMapFragment supportMapFragment;
     private LatLng coorinates;
     private Marker mapMarker;
 
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseLocations;
+    public Activity MainActivity()
+    {
+        return this;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
        super.onCreate(savedInstanceState);
        setContentView(R.layout.activity_main);
 
-       firebaseDatabase = FirebaseDatabase.getInstance();
-       databaseLocations = firebaseDatabase.getReference("Locations");
-
-
+       supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
+       supportMapFragment.getMapAsync(this);
     }
+
 
     @Override
     protected void onStart() {
         super.onStart();
+
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseLocations = firebaseDatabase.getReference("Locations");
+
         firebaseLoadData();
-        supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
-        supportMapFragment.getMapAsync(this);
     }
 
     public void firebaseLoadData()
@@ -72,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Location location = dataSnapshot.getValue(Location.class);
                     Log.d(TAG, String.valueOf(location));
 
-                    if(!dbLocations.contains(location)) {
+                    if(!dbLocations.contains(location.getLocation())) {
                         dbLocations.add(location);
                     }
                 }
@@ -108,6 +121,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     {
         Toast.makeText(this,msg,Toast.LENGTH_SHORT).show();
     }
+
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {

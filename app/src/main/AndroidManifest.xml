@@ -2,14 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.jse58.assignment_maps_jacobesworthy">
 
-   <application
+    <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -21,8 +20,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-       <meta-data android:name="com.google.android.geo.API_KEY"
-           android:value="AIzaSyDSB2K1NB7hbIf6Hsn_WRDs3d_ZXqr5d8s"/>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDSB2K1NB7hbIf6Hsn_WRDs3d_ZXqr5d8s" />
+
     </application>
 
 </manifest>

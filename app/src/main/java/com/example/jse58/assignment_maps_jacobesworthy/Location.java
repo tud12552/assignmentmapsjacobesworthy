@@ -40,4 +40,8 @@ public class Location
     public String getLocation() {
         return location;
     }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
 }

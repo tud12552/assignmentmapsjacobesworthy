@@ -153,11 +153,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        ArrayList<Location> allLocations = loadData();
+        ArrayList<Location> allLocations = new ArrayList<>();
+        allLocations = loadData();
 
         for( int ii = 0; ii < allLocations.size(); ii++)
         {
-            Location tmpLocation = dbLocations.get(ii);
+            Location tmpLocation = allLocations.get(ii);
             coorinates = new LatLng(tmpLocation.getLatitude(), tmpLocation.getLongitude());
             createCustomMapMarkers(googleMap, coorinates, tmpLocation.getLocation(), "HI");
         }
@@ -174,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(coorinates)
-                .zoom(10)
+//                .zoom(10)
                 .bearing(0)
                 .build();
 

@@ -88,13 +88,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void firebaseLoadData()
     {
-        databaseLocations.addValueEventListener(new ValueEventListener() {
+        /*databaseLocations.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot databaseLocs : dataSnapshot.getChildren()) {
 
-                    Object lat = databaseLocs.child("latitude");
-                    Location location = dataSnapshot.getValue(Location.class);
+                    Location location = databaseLocs.getValue(Location.class);
                 }
 
             }
@@ -103,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        });*/
         /*databaseLocations.addChildEventListener(new ChildEventListener()
         {
             @Override
@@ -166,7 +165,23 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        firebaseLoadData();
+        //firebaseLoadData();
+        
+        databaseLocations.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot databaseLocs : dataSnapshot.getChildren())
+                {
+                    Location location = databaseLocs.getValue(Location.class);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
 //        ArrayList<Location> allLocations = new ArrayList<>();
 //        allLocations = loadData();

@@ -1,18 +1,24 @@
 package com.example.jse58.assignment_maps_jacobesworthy;
 
+import android.util.Log;
+
 public class Location
+
 {
     Double locationID;
     Double latitude;
     String location;
     Double longitude;
 
+    String TAG = "LOCATION.java";
+
     public Location()
     {
 
     }
 
-    public Location(Double lat, String loc, Double lon) {
+    public Location(String loc, Double lat, Double lon)
+    {
         this.latitude = lat;
         this.location = loc;
         this.longitude = lon;
@@ -39,9 +45,5 @@ public class Location
 
     public String getLocation() {
         return location;
-    }
-
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
     }
 }

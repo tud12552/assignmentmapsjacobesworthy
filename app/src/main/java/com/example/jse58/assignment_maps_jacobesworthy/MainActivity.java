@@ -31,13 +31,18 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity{// implements OnMapReadyCallback {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     String TAG = "MainActivity";
+
+    public int i = 0;
 
     TextView txtViewLoc;
     TextView txtViewLat;
     TextView txtViewLon;
+
+    Double currentLat,currentLong;
+    String currentLoc;
 
     ArrayList<Location> dbLocations = null;
 
@@ -45,9 +50,9 @@ public class MainActivity extends AppCompatActivity{// implements OnMapReadyCall
     DatabaseReference databaseLocations;
 
     // Map information.
-//    private SupportMapFragment supportMapFragment;
-//    private LatLng coorinates;
-//    private Marker mapMarker;
+    private SupportMapFragment supportMapFragment;
+    private LatLng coorinates;
+    private Marker mapMarker;
 
     public Activity MainActivity()
     {
@@ -59,12 +64,12 @@ public class MainActivity extends AppCompatActivity{// implements OnMapReadyCall
        super.onCreate(savedInstanceState);
        setContentView(R.layout.activity_main);
 
-       txtViewLoc = (TextView)findViewById(R.id.txtViewLocation);
-       txtViewLat = (TextView)findViewById(R.id.txtViewLat);
-       txtViewLon = (TextView) findViewById(R.id.txtViewLon);
+//       txtViewLoc = (TextView)findViewById(R.id.txtViewLocation);
+//       txtViewLat = (TextView)findViewById(R.id.txtViewLat);
+//       txtViewLon = (TextView) findViewById(R.id.txtViewLon);
 
-//       supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
-//       supportMapFragment.getMapAsync(this);
+       supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
+       supportMapFragment.getMapAsync(this);
     }
 
 
@@ -75,12 +80,14 @@ public class MainActivity extends AppCompatActivity{// implements OnMapReadyCall
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseLocations = firebaseDatabase.getReference("Locations");
 
-        firebaseLoadData();
+//        firebaseLoadData();
     }
 
-    public void firebaseLoadData()
+    /*public void firebaseLoadData()
     {
         dbLocations = new ArrayList<>();
+
+
         databaseLocations.addChildEventListener(new ChildEventListener()
         {
             @Override
@@ -90,19 +97,24 @@ public class MainActivity extends AppCompatActivity{// implements OnMapReadyCall
 
                 for (DataSnapshot databaseLocs : dataSnapshot.getChildren())
                 {
-                    Location location = dataSnapshot.getValue(Location.class);
+                    Location loc = dataSnapshot.getValue(Location.class);
+
+                    Log.d(TAG,loc.toString());
+
                     Log.d(TAG, "Location: " + location.getLocation() + " Latitude: " + location.getLatitude().toString()
                     + " Longitude: " + location.getLongitude().toString());
+
+                    //dbLocations.add(location);
+
 
                     txtViewLoc.setText(location.getLocation());
                     txtViewLat.setText(location.getLatitude().toString());
                     txtViewLon.setText(location.getLongitude().toString());
-
-                    if(!dbLocations.contains(location.getLocation())) {
-                        dbLocations.add(location);
-                    }
+                    i++;
                 }
+                txtViewLat.setText(String.valueOf(i));
             }
+
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s)
@@ -129,6 +141,7 @@ public class MainActivity extends AppCompatActivity{// implements OnMapReadyCall
             }
         });
     }
+    */
 
     private void toastMessage(String msg)
     {
@@ -137,17 +150,23 @@ public class MainActivity extends AppCompatActivity{// implements OnMapReadyCall
 
 
 
-/*    @Override
+    @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        Location tmpLocation = dbLocations.get(0);
-        coorinates = new LatLng(tmpLocation.getLatitude(), tmpLocation.getLongitude());
+        ArrayList<Location> allLocations = loadData();
 
-        googleMap.addMarker(new MarkerOptions().position(coorinates).title(tmpLocation.getLocation()));
+        for( int ii = 0; ii < allLocations.size(); ii++)
+        {
+            Location tmpLocation = dbLocations.get(ii);
+            coorinates = new LatLng(tmpLocation.getLatitude(), tmpLocation.getLongitude());
+            createCustomMapMarkers(googleMap, coorinates, tmpLocation.getLocation(), "HI");
+        }
+        //googleMap.addMarker(new MarkerOptions().position(coorinates).title(tmpLocation.getLocation()));
 
         useMapClickListener(googleMap);
         useMarkerClickListener(googleMap);
         mapCameraConfiguration(googleMap);
+
 
     }
 
@@ -216,5 +235,18 @@ public class MainActivity extends AppCompatActivity{// implements OnMapReadyCall
                 return false;
             }
         });
-    }*/
+    }
+
+
+    private ArrayList<Location> loadData(){
+
+        ArrayList<Location> mapLocations = new ArrayList<>();
+
+        mapLocations.add(new Location("New York",39.953348, -75.163353));
+        mapLocations.add(new Location("Paris",48.856788, 2.351077));
+        mapLocations.add(new Location("Las Vegas", 36.167114, -115.149334));
+        mapLocations.add(new Location("Tokyo", 35.689506, 139.691700));
+
+        return mapLocations;
+    }
 }

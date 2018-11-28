@@ -36,12 +36,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     String TAG = "MainActivity";
 
-    public int i = 0;
-
-    TextView txtViewLoc;
-    TextView txtViewLat;
-    TextView txtViewLon;
-
     Double currentLat,currentLong;
     String currentLoc;
 
@@ -51,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     DatabaseReference databaseLocations;
 
     // Map information.
+    private GoogleMap mGoogleMap;
     private SupportMapFragment supportMapFragment;
     private LatLng coorinates;
     private Marker mapMarker;
@@ -65,151 +60,28 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
        super.onCreate(savedInstanceState);
        setContentView(R.layout.activity_main);
 
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseLocations = firebaseDatabase.getReference("Locations");
-
-//       txtViewLoc = (TextView)findViewById(R.id.txtViewLocation);
-//       txtViewLat = (TextView)findViewById(R.id.txtViewLat);
-//       txtViewLon = (TextView) findViewById(R.id.txtViewLon);
-
        supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
        supportMapFragment.getMapAsync(this);
     }
 
 
     @Override
-    protected void onStart() {
-        super.onStart();
-
-
-
-//        firebaseLoadData();
-    }
-
-    public void firebaseLoadData()
+    public void onMapReady(GoogleMap googleMap)
     {
-        /*databaseLocations.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot databaseLocs : dataSnapshot.getChildren()) {
+        mGoogleMap = googleMap;
+        mGoogleMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
 
-                    Location location = databaseLocs.getValue(Location.class);
-                }
+        //useMapClickListener(mGoogleMap);
+        useMarkerClickListener(mGoogleMap);
+        mapCameraConfiguration(mGoogleMap);
+        loadFirebaseData();
 
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });*/
-        /*databaseLocations.addChildEventListener(new ChildEventListener()
-        {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s)
-            {
-                toastMessage("Entered the onChildAdded");
-
-                for (DataSnapshot databaseLocs : dataSnapshot.getChildren())
-                {
-
-                    Object lat = databaseLocs.child("latitude");
-                    Location location = dataSnapshot.getValue(Location.class);
-
-                    Log.d(TAG, "Location: " + location.getLocation() + " Latitude: " + location.getLatitude().toString()
-                    + " Longitude: " + location.getLongitude().toString());
-
-                    //dbLocations.add(location);
-
-
-//                    txtViewLoc.setText(location.getLocation());
-//                    txtViewLat.setText(location.getLatitude().toString());
-//                    txtViewLon.setText(location.getLongitude().toString());
-                }
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s)
-            {
-                toastMessage("Entered the onChildChanged");
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot)
-            {
-                toastMessage("Entered the onChildRemoved");
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s)
-            {
-                toastMessage("Entered the onChildMoved");
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError)
-            {
-                toastMessage("Entered the onCancelled");
-            }
-        });*/
-    }
-
-
-    private void toastMessage(String msg)
-    {
-        Toast.makeText(this,msg,Toast.LENGTH_SHORT).show();
-    }
-
-
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-
-        //firebaseLoadData();
-        
-        databaseLocations.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot databaseLocs : dataSnapshot.getChildren())
-                {
-                    Location location = databaseLocs.getValue(Location.class);
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-//        ArrayList<Location> allLocations = new ArrayList<>();
-//        allLocations = loadData();
-//        for( int ii = 0; ii < allLocations.size(); ii++)
-//        {
-//            Location tmpLocation = allLocations.get(ii);
-//            coorinates = new LatLng(tmpLocation.getLatitude(), tmpLocation.getLongitude());
-//            createCustomMapMarkers(googleMap, coorinates, tmpLocation.getLocation(), "HI");
-
-//        for( int ii = 0; ii < dbLocations.size(); ii++)
-//        {
-//            Location tmpLocation = dbLocations.get(ii);
-//            coorinates = new LatLng(tmpLocation.getLatitude(), tmpLocation.getLongitude());
-//            createCustomMapMarkers(googleMap, coorinates, tmpLocation.getLocation(), "HI");
-//        }
-
-
-        useMapClickListener(googleMap);
-        useMarkerClickListener(googleMap);
-        mapCameraConfiguration(googleMap);
-//        googleMap.addMarker(new MarkerOptions().position(coorinates).title(tmpLocation.getLocation()));
     }
 
     private void mapCameraConfiguration(GoogleMap googleMap){
 
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(coorinates)
-//                .zoom(10)
                 .bearing(0)
                 .build();
 
@@ -229,59 +101,92 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }});
     }
 
-    private void createCustomMapMarkers(GoogleMap googleMap, LatLng latlng, String title, String snippet){
+    private void loadFirebaseData() {
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseLocations = firebaseDatabase.getReference();
 
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latlng) // coordinates
-                .title(title) // location name
-                .snippet(snippet); // location description
+        databaseLocations.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-        // Update the global variable (currentMapMarker)
-        mapMarker = googleMap.addMarker(markerOptions);
-    }
+                Location currentLocation = dataSnapshot.getValue(Location.class);
 
-    private void useMapClickListener(final GoogleMap googleMap){
-
-        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                // Adding a new element from the collection
+                MarkerOptions markerOptions = createMarkerFromCurrentLocation(currentLocation.getCoordinates());
+                mGoogleMap.addMarker(markerOptions);
+            }
 
             @Override
-            public void onMapClick(LatLng latltn) {
-                if(mapMarker != null){
-                    // Remove current marker from the map.
-                    mapMarker.remove();
-                }
-                // The current marker is updated with the new position based on the click.
-                createCustomMapMarkers(
-                        googleMap,
-                        new LatLng(latltn.latitude, latltn.longitude),
-                        "New Marker",
-                        "Listener onMapClick - new position"
-                                +"lat: "+latltn.latitude
-                                +" lng: "+ latltn.longitude);
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                toastMessage("Entered the onChildChanged");
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                toastMessage("Entered the onChildRemoved");
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                toastMessage("Entered the onChildMoved");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                toastMessage("Entered the onCancelled");
             }
         });
     }
+
+    private MarkerOptions createMarkerFromCurrentLocation(LatLng latLng)
+    {
+        MarkerOptions markerOptions = new MarkerOptions();
+        Location tempLocation = new Location();
+
+        markerOptions.position(latLng)
+                .title(tempLocation.getLocation())
+                .snippet(tempLocation.toString());
+
+        return markerOptions;
+    }
+
+
+//    private void useMapClickListener(final GoogleMap googleMap){
+//
+//        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+//
+//            @Override
+//            public void onMapClick(LatLng latltn) {
+//                if(mapMarker != null){
+//                    // Remove current marker from the map.
+//                    mapMarker.remove();
+//                }
+//                // The current marker is updated with the new position based on the click.
+//                createCustomMapMarkers(
+//                        googleMap,
+//                        new LatLng(latltn.latitude, latltn.longitude),
+//                        "New Marker",
+//                        "Listener onMapClick - new position"
+//                                +"lat: "+latltn.latitude
+//                                +" lng: "+ latltn.longitude);
+//            }
+//        });
+//    }
 
     private void useMarkerClickListener(GoogleMap googleMap){
         googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
 
+                marker.showInfoWindow();
+
                 return false;
             }
         });
     }
 
-
-    private ArrayList<Location> loadData(){
-
-        ArrayList<Location> mapLocations = new ArrayList<>();
-
-        mapLocations.add(new Location("New York",39.953348, -75.163353));
-        mapLocations.add(new Location("Paris",48.856788, 2.351077));
-        mapLocations.add(new Location("Las Vegas", 36.167114, -115.149334));
-        mapLocations.add(new Location("Tokyo", 35.689506, 139.691700));
-
-        return mapLocations;
+    private void toastMessage(String msg)
+    {
+        Toast.makeText(this,msg,Toast.LENGTH_SHORT).show();
     }
 }

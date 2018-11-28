@@ -2,6 +2,8 @@ package com.example.jse58.assignment_maps_jacobesworthy;
 
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class Location
 
 {
@@ -29,6 +31,12 @@ public class Location
         this.latitude = latitude;
         this.location = location;
         this.longitude = longitude;
+    }
+
+    public LatLng getCoordinates()
+    {
+        LatLng currentCoordinates = new LatLng(getLatitude(), getLongitude());
+        return currentCoordinates;
     }
 
     public Double getLocationID() {

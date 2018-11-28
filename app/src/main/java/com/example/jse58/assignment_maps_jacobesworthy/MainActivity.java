@@ -27,6 +27,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +65,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
        super.onCreate(savedInstanceState);
        setContentView(R.layout.activity_main);
 
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseLocations = firebaseDatabase.getReference("Locations");
+
 //       txtViewLoc = (TextView)findViewById(R.id.txtViewLocation);
 //       txtViewLat = (TextView)findViewById(R.id.txtViewLat);
 //       txtViewLon = (TextView) findViewById(R.id.txtViewLon);
@@ -77,18 +81,30 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onStart() {
         super.onStart();
 
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseLocations = firebaseDatabase.getReference("Locations");
+
 
 //        firebaseLoadData();
     }
 
-    /*public void firebaseLoadData()
+    public void firebaseLoadData()
     {
-        dbLocations = new ArrayList<>();
+        databaseLocations.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot databaseLocs : dataSnapshot.getChildren()) {
 
+                    Object lat = databaseLocs.child("latitude");
+                    Location location = dataSnapshot.getValue(Location.class);
+                }
 
-        databaseLocations.addChildEventListener(new ChildEventListener()
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        /*databaseLocations.addChildEventListener(new ChildEventListener()
         {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s)
@@ -97,9 +113,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 for (DataSnapshot databaseLocs : dataSnapshot.getChildren())
                 {
-                    Location loc = dataSnapshot.getValue(Location.class);
 
-                    Log.d(TAG,loc.toString());
+                    Object lat = databaseLocs.child("latitude");
+                    Location location = dataSnapshot.getValue(Location.class);
 
                     Log.d(TAG, "Location: " + location.getLocation() + " Latitude: " + location.getLatitude().toString()
                     + " Longitude: " + location.getLongitude().toString());
@@ -107,14 +123,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     //dbLocations.add(location);
 
 
-                    txtViewLoc.setText(location.getLocation());
-                    txtViewLat.setText(location.getLatitude().toString());
-                    txtViewLon.setText(location.getLongitude().toString());
-                    i++;
+//                    txtViewLoc.setText(location.getLocation());
+//                    txtViewLat.setText(location.getLatitude().toString());
+//                    txtViewLon.setText(location.getLongitude().toString());
                 }
-                txtViewLat.setText(String.valueOf(i));
             }
-
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s)
@@ -139,9 +152,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             {
                 toastMessage("Entered the onCancelled");
             }
-        });
+        });*/
     }
-    */
+
 
     private void toastMessage(String msg)
     {
@@ -153,22 +166,28 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        ArrayList<Location> allLocations = new ArrayList<>();
-        allLocations = loadData();
+        firebaseLoadData();
 
-        for( int ii = 0; ii < allLocations.size(); ii++)
-        {
-            Location tmpLocation = allLocations.get(ii);
-            coorinates = new LatLng(tmpLocation.getLatitude(), tmpLocation.getLongitude());
-            createCustomMapMarkers(googleMap, coorinates, tmpLocation.getLocation(), "HI");
-        }
-        //googleMap.addMarker(new MarkerOptions().position(coorinates).title(tmpLocation.getLocation()));
+//        ArrayList<Location> allLocations = new ArrayList<>();
+//        allLocations = loadData();
+//        for( int ii = 0; ii < allLocations.size(); ii++)
+//        {
+//            Location tmpLocation = allLocations.get(ii);
+//            coorinates = new LatLng(tmpLocation.getLatitude(), tmpLocation.getLongitude());
+//            createCustomMapMarkers(googleMap, coorinates, tmpLocation.getLocation(), "HI");
+
+//        for( int ii = 0; ii < dbLocations.size(); ii++)
+//        {
+//            Location tmpLocation = dbLocations.get(ii);
+//            coorinates = new LatLng(tmpLocation.getLatitude(), tmpLocation.getLongitude());
+//            createCustomMapMarkers(googleMap, coorinates, tmpLocation.getLocation(), "HI");
+//        }
+
 
         useMapClickListener(googleMap);
         useMarkerClickListener(googleMap);
         mapCameraConfiguration(googleMap);
-
-
+//        googleMap.addMarker(new MarkerOptions().position(coorinates).title(tmpLocation.getLocation()));
     }
 
     private void mapCameraConfiguration(GoogleMap googleMap){

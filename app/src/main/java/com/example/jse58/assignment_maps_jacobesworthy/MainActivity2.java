@@ -7,7 +7,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.jse58.assignment_maps_jacobesworthy.BroadcastReceiverMap;
+import com.example.jse58.assignment_maps_jacobesworthy.Location;
+
 public class MainActivity2 extends AppCompatActivity {
+    
+    IntentFilter intentFilter = null;
+    Broadcastreceiver broadcastReceiver = null;
 
     EditText editTxtLat, editTxtLong, editTxtLoc, editTxtDesc;
 
@@ -39,5 +45,21 @@ public class MainActivity2 extends AppCompatActivity {
 
             }
         });
+        
+        @Override
+        protected void onStart()
+        {
+            super.onStart();
+            intentFilter = new IntentFilter(BroadcastReceiverMap.NEW_MAP_LOCATION_BROADCAST);
+            broadcastReceiverMap = new BroadcastReceiverMap();
+            registerReceiver(broadcastReceiverMap, intentFilter);
+        }
+        
+        @Override
+        protected void onStop()
+        {
+            unregisterReceiver(broadcastReceiverMap);
+            super.onStop();
+        }
     }
 }

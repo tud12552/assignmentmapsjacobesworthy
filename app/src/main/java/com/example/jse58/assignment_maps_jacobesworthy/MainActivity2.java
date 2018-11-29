@@ -34,6 +34,17 @@ public class MainActivity2 extends AppCompatActivity {
         btnCustomLoc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                
+                String loc = editTxtLoc.getText().toString();
+                Double lat = Double.valueOf(editTxtLat.getText().toString());
+                Double lon = Double.valueOf(editTxtLong.getText().toString());
+                
+                Location custLoc = new Location(loc, lat, lon);
+                
+                Intent intentSendBroadcast = new Intent("com.example.jse58.assignment_maps_jacobesworthy.action.NEW_MAP_LOCATION_BROADCAST");
+                intentSendBroadcast.putExtra("CUSTOM_LOCATION",custLoc);
+                sendBroadcast(intentSendBroadcast);
+                
                 Intent goToMapAct = new Intent(MainActivity2.this, MainActivity.class);
 
                 goToMapAct.putExtra("LATITUDE", editTxtLat.getText().toString());

@@ -50,30 +50,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private IntentFilter intentFilter;
     private BroadcastReceiverMap broadcastReceiverMap;
 
-    public Activity MainActivity()
-    {
-        return this;
-    }
+//    --- DO NOT THINK THIS IS NEEDED, TEST IT COMMENTED OUT AND DECIDE ---    
+//    public Activity MainActivity()
+//    {
+//        return this;
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
        super.onCreate(savedInstanceState);
        setContentView(R.layout.activity_main);
 
-       Intent prevData = getIntent();
-
-       currentLat = prevData.getStringExtra("LATITUDE");
-       currentLong = prevData.getStringExtra("LONGITUDE");
-       currentLoc = prevData.getStringExtra("LOCATION");
-       currentDesc = prevData.getStringExtra("DESCRIPTION");
-
-       custLatitude = Double.valueOf(currentLat);
-       custLongitude = Double.valueOf(currentLong);
-
        supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
        supportMapFragment.getMapAsync(this);
 
-        intentFilter = new IntentFilter("com.example.jse58.assignment_maps_jacobesworthy.NEW_MAP_LOCATION_BROADCAST");
+        intentFilter = new IntentFilter("com.example.jse58.assignment_maps_jacobesworthy.action.NEW_MAP_LOCATION_BROADCAST");
         broadcastReceiverMap = new BroadcastReceiverMap();
     }
 
@@ -96,8 +87,23 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     {
         mGoogleMap = googleMap;
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+        
+        Intent prevData = getIntent();
+        
+       currentLat = prevData.getStringExtra("LATITUDE");
+       currentLong = prevData.getStringExtra("LONGITUDE");
+       currentLoc = prevData.getStringExtra("LOCATION");
+       currentDesc = prevData.getStringExtra("DESCRIPTION");
 
-        useMapClickListener();
+       custLatitude = Double.valueOf(currentLat);
+       custLongitude = Double.valueOf(currentLong);
+       LatLng custCoords = new LatLng(custLatitude, custLongitude);
+        
+        // Plot the custom marker here and call function to get the marker options.
+        mGoogleMap.addMarker(adduserCreatedMarker(currentLoc, custCoords, currentDesc));
+        
+
+        useMapClickListener(mGoogleMap);
         useMarkerClickListener(mGoogleMap);
         mapCameraConfiguration(mGoogleMap);
         loadFirebaseData();
@@ -184,14 +190,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         return markerOptions;
     }
 
-    private void userCreatedMarker(LatLng position, String title, @Nullable String Snippet)
+    private MarkerOptions userCreatedMarker( String title, LatLng position, String snippet)
     {
         MarkerOptions markerOptions = new MarkerOptions();
 
         markerOptions.position(position)
-                .title(title);
-
-        mGoogleMap.addMarker(markerOptions);
+                .title(title)
+                .snippet(snippet);
+        
+        return markerOptions;
     }
 
 

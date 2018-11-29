@@ -13,7 +13,7 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity2">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,6 +24,14 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDSB2K1NB7hbIf6Hsn_WRDs3d_ZXqr5d8s" />
+
+        <activity android:name=".MainActivity"></activity>
+
+        <receiver android:name=".BroadcastReceiverMap">
+            <intent-filter>
+                <action android:name="com.example.jse58.assignment_maps_jacobesworthy.NEW_MAP_LOCATION_BROADCAST"/>
+            </intent-filter>
+        </receiver>
 
     </application>
 

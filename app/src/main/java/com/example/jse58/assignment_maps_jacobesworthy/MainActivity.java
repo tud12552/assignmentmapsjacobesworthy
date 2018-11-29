@@ -2,16 +2,11 @@ package com.example.jse58.assignment_maps_jacobesworthy;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -28,17 +23,17 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+
+import com.example.jse58.assignment_maps_jacobesworthy.BroadcastReceiverMap;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     String TAG = "MainActivity";
+    String currentLoc, currentLat,currentLong, currentDesc;
 
-    Double currentLat,currentLong;
-    String currentLoc;
+    Double custLatitude, custLongitude;
 
     ArrayList<Location> dbLocations = null;
 
@@ -60,6 +55,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
        super.onCreate(savedInstanceState);
        setContentView(R.layout.activity_main);
+
+       Intent prevData = getIntent();
+
+       currentLat = prevData.getStringExtra("LATITUDE");
+       currentLong = prevData.getStringExtra("LONGITUDE");
+       currentLoc = prevData.getStringExtra("LOCATION");
+       currentDesc = prevData.getStringExtra("DESCRIPTION");
+
+       custLatitude = Double.valueOf(currentLat);
+       custLongitude = Double.valueOf(currentLong);
 
        supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
        supportMapFragment.getMapAsync(this);

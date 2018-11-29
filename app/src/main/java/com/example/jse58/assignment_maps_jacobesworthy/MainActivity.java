@@ -80,8 +80,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void mapCameraConfiguration(GoogleMap googleMap){
 
+        LatLng latlng = new LatLng(42,75);
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(coorinates)
+                .target(latlng)
                 .bearing(0)
                 .build();
 
@@ -109,11 +110,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                Location currentLocation = dataSnapshot.getValue(Location.class);
 
-                // Adding a new element from the collection
-                MarkerOptions markerOptions = createMarkerFromCurrentLocation(currentLocation.getCoordinates());
-                mGoogleMap.addMarker(markerOptions);
+                for(DataSnapshot databaseLocations : dataSnapshot.getChildren()) {
+                    Location currentLocation = databaseLocations.getValue(Location.class);
+
+                    // Adding a new element from the collection
+                    MarkerOptions markerOptions = createMarkerFromCurrentLocation(currentLocation.getCoordinates());
+                    mGoogleMap.addMarker(markerOptions);
+                }
             }
 
             @Override

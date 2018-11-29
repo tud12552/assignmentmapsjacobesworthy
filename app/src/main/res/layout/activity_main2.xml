@@ -16,7 +16,7 @@
             android:id="@+id/editTxtLat"
             android:autofillHints="Enter Latitude"
             android:hint="Enter Latitude"
-            android:inputType="number"
+            android:inputType="text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -24,7 +24,7 @@
             android:id="@+id/editTxtLong"
             android:autofillHints="Enter Longitude"
             android:hint="Enter Longitude"
-            android:inputType="number"
+            android:inputType="text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

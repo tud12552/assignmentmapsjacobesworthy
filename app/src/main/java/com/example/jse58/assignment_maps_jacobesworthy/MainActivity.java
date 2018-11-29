@@ -70,11 +70,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
        custLatitude = Double.valueOf(currentLat);
        custLongitude = Double.valueOf(currentLong);
 
-       intentFilter = new IntentFilter("com.example.jse58.assignment_maps_jacobesworthy.NEW_MAP_LOCATION_BROADCAST");
-       broadcastReceiverMap = new BroadcastReceiverMap();
-
        supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
        supportMapFragment.getMapAsync(this);
+
+        intentFilter = new IntentFilter("com.example.jse58.assignment_maps_jacobesworthy.NEW_MAP_LOCATION_BROADCAST");
+        broadcastReceiverMap = new BroadcastReceiverMap();
     }
 
     @Override

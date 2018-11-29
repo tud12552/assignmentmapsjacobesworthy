@@ -2,6 +2,7 @@ package com.example.jse58.assignment_maps_jacobesworthy;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -46,6 +47,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LatLng coorinates;
     private Marker mapMarker;
 
+    private IntentFilter intentFilter;
+    private BroadcastReceiverMap broadcastReceiverMap;
+
     public Activity MainActivity()
     {
         return this;
@@ -66,10 +70,26 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
        custLatitude = Double.valueOf(currentLat);
        custLongitude = Double.valueOf(currentLong);
 
+       intentFilter = new IntentFilter("com.example.jse58.assignment_maps_jacobesworthy.NEW_MAP_LOCATION_BROADCAST");
+       broadcastReceiverMap = new BroadcastReceiverMap();
+
        supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
        supportMapFragment.getMapAsync(this);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        registerReceiver(broadcastReceiverMap, intentFilter);
+    }
+
+    @Override
+    protected void onStop() {
+        unregisterReceiver(broadcastReceiverMap);
+
+        super.onStop();
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap)

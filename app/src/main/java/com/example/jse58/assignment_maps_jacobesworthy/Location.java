@@ -3,6 +3,7 @@ package com.example.jse58.assignment_maps_jacobesworthy;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 public class Location
 
@@ -11,6 +12,8 @@ public class Location
     Double latitude;
     String location;
     Double longitude;
+
+    LatLng latlng = new LatLng(39.952583,-75.165222); // Initial position for camera.
 
     String TAG = "LOCATION.java";
 
@@ -37,6 +40,11 @@ public class Location
     {
         LatLng currentCoordinates = new LatLng(getLatitude(), getLongitude());
         return currentCoordinates;
+    }
+
+    public LatLng initialCameraPosition()
+    {
+        return latlng;
     }
 
     public Double getLocationID() {

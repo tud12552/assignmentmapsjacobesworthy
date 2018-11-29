@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mGoogleMap = googleMap;
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
 
-        //useMapClickListener(mGoogleMap);
+        useMapClickListener();
         useMarkerClickListener(mGoogleMap);
         mapCameraConfiguration(mGoogleMap);
         loadFirebaseData();
@@ -80,9 +81,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void mapCameraConfiguration(GoogleMap googleMap){
 
-        LatLng latlng = new LatLng(42,75);
+        Location loc = new Location();
+        LatLng latLng = loc.initialCameraPosition();
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(latlng)
+                .target(latLng)
+                .zoom(2)
                 .bearing(0)
                 .build();
 
@@ -114,8 +117,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 for(DataSnapshot databaseLocations : dataSnapshot.getChildren()) {
                     Location currentLocation = databaseLocations.getValue(Location.class);
 
-                    // Adding a new element from the collection
-                    MarkerOptions markerOptions = createMarkerFromCurrentLocation(currentLocation.getCoordinates());
+                    Log.d(TAG, "Location is " + currentLocation.getLocation() + "\nLat: " + currentLocation.getLatitude() + "\nLong: " + currentLocation.getLongitude());
+
+                    MarkerOptions markerOptions = createMarkerFromCurrentLocation(currentLocation);
                     mGoogleMap.addMarker(markerOptions);
                 }
             }
@@ -142,40 +146,50 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
-    private MarkerOptions createMarkerFromCurrentLocation(LatLng latLng)
+    private MarkerOptions createMarkerFromCurrentLocation(Location tempLocation)
     {
         MarkerOptions markerOptions = new MarkerOptions();
-        Location tempLocation = new Location();
+
+        LatLng latLng = tempLocation.getCoordinates();
+        String title = tempLocation.getLocation();
 
         markerOptions.position(latLng)
-                .title(tempLocation.getLocation())
-                .snippet(tempLocation.toString());
+                .title(title);
 
         return markerOptions;
     }
 
+    private void userCreatedMarker(LatLng position, String title, @Nullable String Snippet)
+    {
+        MarkerOptions markerOptions = new MarkerOptions();
 
-//    private void useMapClickListener(final GoogleMap googleMap){
-//
-//        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-//
-//            @Override
-//            public void onMapClick(LatLng latltn) {
-//                if(mapMarker != null){
-//                    // Remove current marker from the map.
-//                    mapMarker.remove();
-//                }
-//                // The current marker is updated with the new position based on the click.
-//                createCustomMapMarkers(
-//                        googleMap,
-//                        new LatLng(latltn.latitude, latltn.longitude),
-//                        "New Marker",
-//                        "Listener onMapClick - new position"
-//                                +"lat: "+latltn.latitude
-//                                +" lng: "+ latltn.longitude);
-//            }
-//        });
-//    }
+        markerOptions.position(position)
+                .title(title);
+
+        mGoogleMap.addMarker(markerOptions);
+    }
+
+
+    private void useMapClickListener(){
+
+        mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+
+            @Override
+            public void onMapClick(LatLng latlon) {
+                if(mapMarker != null){
+                    // Remove current marker from the map.
+                    mapMarker.remove();
+                }
+
+                userCreatedMarker(
+                        latlon,
+                        "User created new position"
+                                +"lat: "+ latlon.latitude
+                                +" lng: "+ latlon.longitude,
+                        "");
+            }
+        });
+    }
 
     private void useMarkerClickListener(GoogleMap googleMap){
         googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -183,6 +197,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public boolean onMarkerClick(Marker marker) {
 
                 marker.showInfoWindow();
+
 
                 return false;
             }

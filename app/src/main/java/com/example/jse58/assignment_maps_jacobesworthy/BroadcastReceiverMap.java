@@ -24,11 +24,7 @@ public class BroadcastReceiverMap extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        String tmp = intent.getStringExtra("LATITUDE");
-        Double lat = Double.valueOf(tmp);
-        tmp = intent.getStringExtra("LONGITUDE");
-        Double lon = Double.valueOf(tmp);
-        String location = intent.getStringExtra("LOCATION");
+        Location bCastLoc = (Location)intent.getSerializableExtra("CUSTOM_LOCATION");
 
         notificationChannel = new NotificationChannel(CHANNELID,CHANNEL_DESC,CHANNEL_IMPORT);
         notificationChannel.setDescription(CHANNEL_DESC);
@@ -43,8 +39,8 @@ public class BroadcastReceiverMap extends BroadcastReceiver {
 
         notificationBuilder.setSmallIcon(R.drawable.ic_launcher_foreground);
 
-        notificationBuilder.setContentTitle(location);
-        notificationBuilder.setContentText("Located at " + lat + " , " + lon);
+        notificationBuilder.setContentTitle(bCastLoc.getLocation());
+        notificationBuilder.setContentText("Located at " + bCastLoc.getLatitude() + " , " + bCastLoc.getLongitude());
 
         notificationManager.createNotificationChannel(notificationChannel);
 

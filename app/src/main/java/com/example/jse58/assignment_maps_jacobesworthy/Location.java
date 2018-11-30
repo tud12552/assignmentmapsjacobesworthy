@@ -1,26 +1,27 @@
 package com.example.jse58.assignment_maps_jacobesworthy;
 
-import android.util.Log;
-
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
-public class Location
+import java.io.Serializable;
 
+public class Location implements Serializable
 {
-    Double locationID;
     Double latitude;
     String location;
     Double longitude;
-
-    LatLng latlng = new LatLng(39.952583,-75.165222); // Initial position for camera.
-
-    String TAG = "LOCATION.java";
 
     public Location()
     {
 
     }
+
+    public LatLng customLocation(Double lat, Double lon)
+    {
+        this.latitude = lat;
+        this.longitude = lon;
+        return new LatLng(lat,lon);
+    }
+
 
     public Location(String loc, Double lat, Double lon)
     {
@@ -29,26 +30,10 @@ public class Location
         this.longitude = lon;
     }
 
-    public Location(Double locationID, Double latitude, String location, Double longitude) {
-        this.locationID = locationID;
-        this.latitude = latitude;
-        this.location = location;
-        this.longitude = longitude;
-    }
-
     public LatLng getCoordinates()
     {
         LatLng currentCoordinates = new LatLng(getLatitude(), getLongitude());
         return currentCoordinates;
-    }
-
-    public LatLng initialCameraPosition()
-    {
-        return latlng;
-    }
-
-    public Double getLocationID() {
-        return locationID;
     }
 
     public Double getLatitude() {

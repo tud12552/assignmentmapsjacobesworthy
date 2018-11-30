@@ -24,6 +24,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class MappingActivity extends AppCompatActivity implements OnMapReadyCallback
@@ -106,7 +107,7 @@ public class MappingActivity extends AppCompatActivity implements OnMapReadyCall
         LatLng latLng = loc.customLocation(custLatitude, custLongitude);
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(latLng)
-                .zoom(3)
+                .zoom(15)
                 .bearing(0)
                 .build();
 
@@ -213,16 +214,20 @@ public class MappingActivity extends AppCompatActivity implements OnMapReadyCall
 
         databaseLocations.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s)
+            {
                 for(DataSnapshot databaseLocations : dataSnapshot.getChildren()) {
                     Location currentLocation = databaseLocations.getValue(Location.class);
+                    Serializable bCastLoc = databaseLocations.getValue(Location.class);
 
                     Log.d(TAG, "Location is " + currentLocation.getLocation() + "\nLat: " + currentLocation.getLatitude() + "\nLong: " + currentLocation.getLongitude());
 
                     MarkerOptions markerOptions = createMarkerFromCurrentLocation(currentLocation);
                     mGoogleMap.addMarker(markerOptions);
+
+                    Intent intentSendBroadcast = new Intent("com.example.jse58.assignment_maps_jacobesworthy.action.NEW_MAP_LOCATION_BROADCAST");
+                    intentSendBroadcast.putExtra("CUSTOM_LOCATION",bCastLoc);
+                    sendBroadcast(intentSendBroadcast);
                 }
             }
 

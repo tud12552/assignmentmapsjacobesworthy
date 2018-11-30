@@ -12,6 +12,8 @@ import android.graphics.Color;
 
 public class BroadcastReceiverMap extends BroadcastReceiver {
 
+    private int i = 0;
+
     private NotificationManager notificationManager;
     private Notification.Builder notificationBuilder;
 
@@ -23,6 +25,7 @@ public class BroadcastReceiverMap extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        i++;
 
         Location bCastLoc = (Location)intent.getSerializableExtra("CUSTOM_LOCATION");
 
@@ -44,6 +47,6 @@ public class BroadcastReceiverMap extends BroadcastReceiver {
 
         notificationManager.createNotificationChannel(notificationChannel);
 
-        notificationManager.notify(1,notificationBuilder.build());
+        notificationManager.notify(i,notificationBuilder.build());
     }
 }
